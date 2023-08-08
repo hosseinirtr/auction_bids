@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %} {% block body %} {% load static %}
+<h2>Active Listings</h2>
+
+<div class="d-flex flex-row row">
+  {% if categories %} {% for category in categories %}
+  <div class="">
+    <form action="{% url 'displayCategories' %}" method="POST" class="row mx-2">
+      {% csrf_token %}
+
+      <button type="submit" class="btn btn-primary">
+        <input
+          type="hidden"
+          name="category"
+          value="{{ category.categoryName }}"
+        />
+        <h5 class="card-title">{{ category.categoryName }}</h5>
+      </button>
+    </form>
+  </div>
+  {% endfor %} {% endif %}
+</div>
+<div class="d-flex flex-row row">
+  {% if listing %} {% for item in listing %}
+  <div class="card p-2 m-3" style="width: 18rem; height: 24rem">
+    <img
+      class="card-img-top"
+      src="media/{{ item.imageUrl }}"
+      style="max-width: 17rem; height: 12rem"
+      alt="Card image cap"
+    />
+
+    <div class="card-body">
+      <h5 class="card-title">{{ item.title }}</h5>
+      <p class="card-text">{{ item.description }}</p>
+      <small class="text-muted">{{ item.price }} USD</small>
+      <br />
+      <a href="{% url 'details' item.id %}" class="btn btn-primary"
+        >Go somewhere</a
+      >
+    </div>
+  </div>
+  {% endfor %} {% else %}
+</div>
+<h2>No items found</h2>
+{% endif %} {% endblock %}

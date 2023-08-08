@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %} {% load static %} {% block body %}
+<div class="">
+  <h2>{{ title }}</h2>
+  <img src="{{ img_path }}" width="324px" alt="Listing image" />
+  {%if user.is_authenticated%} {% if isWatchlist%}
+  <form action="{% url 'removeWatchlist' id=body.id %}" mothod="POST">
+    <button class="btn btn-danger">remove from watchlist</button>
+  </form>
+
+  {%else%}
+  <form action="{% url 'addWatchlist' id=body.id %}" mothod="POST">
+    <button class="btn btn-success">add to watchlist</button>
+  </form>
+  {% endif%} {% endif%}
+  <p>Description: {{body.description}}</p>
+  <p>price: {{body.price}} USD</p>
+  <p>owner: {{body.owner}}</p>
+  <p>category: {{body.category}}</p>
+</div>
+
+{% endblock %}

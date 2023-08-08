@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %} {% block body %}
+{% load static %}
+<h2>Active Listings</h2>
+
+{% if listing %}
+<div class="row mx-2">
+  {% for item in listing%}
+
+  <div class="card p-2 m-3" style="width: 18rem; height: 24rem">
+    <img class="card-img-top" src="media/{{ item.imageUrl }}" style="max-width: 17rem; height:12rem;" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">{{item.title}}</h5>
+      <p class="card-text">{{item.description}}</p>
+      {% comment %} <p class="card-text "></p> {% endcomment %}
+      <small class="text-muted">{{item.price}} USD</small>
+      <br/>
+      <a href="{% url 'details' item.id %}" class="btn btn-primary">Go somewhere</a>
+    </div>
+  </div>
+  {%endfor%}
+</div>
+  {%else %}
+  <h2>No item found</h2>
+  {%endif%} {% endblock %}
+</ul>
