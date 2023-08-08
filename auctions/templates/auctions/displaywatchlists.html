@@ -1,10 +1,10 @@
 {% extends "auctions/layout.html" %} {% block body %}
 {% load static %}
-<h2>Active Listings</h2>
+<h2>Watchlist Listings</h2>
 
-{% if listing %}
+{% if watchlistItem %}
 <div class="row mx-2">
-  {% for item in listing%}
+  {% for item in watchlistItem%}
   <div class="card p-2 m-3" style="width: 18rem; height: 24rem">
     <img class="card-img-top" src="media/{{ item.imageUrl }}" style="max-width: 17rem; height:12rem;" alt="Card image cap">
     <div class="card-body">

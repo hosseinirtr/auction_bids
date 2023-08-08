@@ -24,28 +24,38 @@
     </div>
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
+        <a class="nav-link btn btn-link p-1 mx-2" href="{% url 'index' %}">Active Listings</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'displayCategories' %}">categories</a>
+        <a class="nav-link btn btn-link p-1 mx-2" href="{% url 'displayCategories' %}">categories</a>
       </li>
       {% if user.is_authenticated %}
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'create' %}">create</a>
+        <a class="nav-link btn btn-link p-1 mx-2" href="{% url 'create' %}">create</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+        <a class="nav-link btn btn-success p-1 m-0" href="{% url 'displaywatchlists' %}">Watchlist {{len}}</a>
+        
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-link p-1 mx-2" href="{% url 'logout' %}">Log Out</a>
       </li>
       {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+        <a class="nav-link btn btn-link p-1 mx-2" href="{% url 'login' %}">Log In</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'register' %}">Register</a>
+        <a class="nav-link btn btn-link p-1 mx-2" href="{% url 'register' %}">Register</a>
       </li>
       {% endif %}
     </ul>
     <hr />
     {% block body %} {% endblock %}
   </body>
+
+  <script>
+    watchlistItem.map((item)=>{
+      console.log(item)
+    })
+  </script>
 </html>

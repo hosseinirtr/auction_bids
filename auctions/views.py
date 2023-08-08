@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -6,14 +7,13 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from .models import User, Categories, Listing
-from .models import User, WatchlistItem, Comment
-
+from .models import User, WatchlistItem, Comments, Bids
 
 def index(request):
     activeListing = Listing.objects.filter(isActive=True)
     return render(request, "auctions/index.html", {
         'listing': activeListing,
-        'categories': Categories.objects.all()
+        'categories': Categories.objects.all(),
     })
 
 
@@ -25,8 +25,10 @@ def details(request, id):
         user=user, listing=listing).exists()
     img_path = 'http://' + request.get_host() + '/media/' + \
         str(details_item.imageUrl)
+    comments = Comments.objects.filter(listing=id)
+    bids = Bids.objects.filter(listing=id)
     return render(request, 'auctions/details.html', {
-        'body': details_item, 'title': details_item.title, "img_path": img_path, "isWatchlist": iswatchlisted
+        'body': details_item, 'title': details_item.title, "img_path": img_path, "isWatchlist": iswatchlisted, "comments":comments, "bids":bids, "last_bid": bids.last()
     })
 
 
@@ -52,7 +54,6 @@ def removeWatchlist(request, id):
 
 
 def displayCategories(request):
-
     img_path = 'http://' + request.get_host() + '/media/'
     allCategory = Categories.objects.all()
     if request.method == "POST":
@@ -71,6 +72,13 @@ def displayCategories(request):
         })
 
 
+# //displaywatchlists
+
+def displaywatchlists(request):
+    return render(request, 'auctions/displaywatchlists.html')
+
+
+@login_required
 def create_listing(request):
     if (request.method == "GET"):
         all_categories = Categories.objects.all()
@@ -147,11 +155,24 @@ def register(request):
         return render(request, "auctions/register.html")
 
 
-def addComment(request, listing_id):
+def addComment(request, id):
+    listing_id  = id
     if request.method == "POST":
         message = request.POST['message']
         author = request.user
-        add_comment = Comment.objects.create(
-            author=author, listing_id=listing_id, message=message)
+        listing = Listing.objects.get(pk=listing_id)
+        add_comment = Comments.objects.create(
+            author=author, listing=listing, message=message)
+        add_comment.save()
+        return HttpResponseRedirect(reverse('details', args=[listing_id, ]))
+
+def addBid(request,id):
+    listing_id  = id
+    if request.method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+        user = request.user
+        offered_price = request.POST['offered_price']
+        add_comment = Bids.objects.create(
+            user=user,  listing=listing, offered_price=offered_price)
         add_comment.save()
         return HttpResponseRedirect(reverse('details', args=[listing_id, ]))

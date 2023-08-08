@@ -1,7 +1,11 @@
 {% extends "auctions/layout.html" %} {% load static %} {% block body %}
 <div class="">
+<div class="d-flex flex-row">
+  <div class="col-md-6">
+    <img src="{{ img_path }}" width="324px" alt="Listing image" />
+  </div>
+  <div class="col-md-6">
   <h2>{{ title }}</h2>
-  <img src="{{ img_path }}" width="324px" alt="Listing image" />
   {%if user.is_authenticated%} {% if isWatchlist%}
   <form action="{% url 'removeWatchlist' id=body.id %}" mothod="POST">
     <button class="btn btn-danger">remove from watchlist</button>
@@ -12,10 +16,64 @@
     <button class="btn btn-success">add to watchlist</button>
   </form>
   {% endif%} {% endif%}
-  <p>Description: {{body.description}}</p>
-  <p>price: {{body.price}} USD</p>
-  <p>owner: {{body.owner}}</p>
-  <p>category: {{body.category}}</p>
-</div>
+  <div>
+    <strong>Description:</strong>
+    <p>{{body.description}}</p>
+  </div>
+  <ul>
+    <li>Start Price: {{body.price}} USD</li>
+    <li>Owner: {{body.owner}}</li>
+    <li>Category: {{body.category}}</li>
+    <li><small>Last Bid :  @{{last_bid.user}} offered {{last_bid.offered_price}}</small></li>
+  </ul>
+  <form action="{% url 'addBid' id=body.id %}" method="POST" class="d-flex">
+    {% csrf_token %}
 
+    <div class="">
+      <span class="input-group-text" id="inputGroup-sizing-sm">Offered Price</span>
+    </div>
+    <input class="form-control w-25" type="number" name="offered_price"/>
+    <button type="submit" class="btn btn-warning p-0 m-0 px-1 mx-1 ">Send</button>
+  
+  </form>
+  </div>
+</div>
+  <div class="down-section mt-5 d-flex flex-column">
+
+    <div class="bids-list p-5">
+      <strong>Bids </strong>
+      <ul>
+        {% for bid in bids%}
+        <li>
+          <span class="text-info"> @{{bid.user.username}}</span> offered <strong>{{bid.offered_price}} USD</strong> <small>on {{bid.date}} </small>
+        </li>
+        {% endfor%}
+      </ul>
+    </div>
+    <div class="p-5">
+      <strong>
+        Comments:
+      </strong>
+      <form action="{% url 'addComment' id=body.id %}" method="POST">
+        {% csrf_token %}
+        <div class="d-flex justify-content-center">
+          <textarea name="message" class="form-control w-100 mr-5 rounded"  placeholder="Write your idea about this product ..." ></textarea>
+        </div>
+        <button type="submit" class="btn btn-info p-1 m-1">Comment</button>
+      </form>
+      <div class="comments-list">
+       
+        {% for comment in comments %}
+          <div class="comment-item m-4 border rounded w-75 p-2">
+            <div class="comment-name ">by <span class="text-info">{{comment.author}}</span></div>
+            <div class="comment-message">{{comment.message}}</div>
+            <small>{{comment.date}}</small>
+          </div>
+        {% endfor%}       
+
+      </div>
+    </div>
+
+</div>
+</div>
 {% endblock %}
